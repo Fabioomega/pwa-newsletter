@@ -9,9 +9,9 @@ const router = express.Router();
 
 router.post('/register', async (req, res, next) => {
     try {
-        const { username, senha, is_admin } = req.body;
+        const { username, senha, isAdmin } = req.body;
 
-        const campos = ['username', 'senha', 'is_admin'];
+        const campos = ['username', 'senha', 'isAdmin'];
 
         const camposObrigatorios = [];
 
@@ -37,7 +37,7 @@ router.post('/register', async (req, res, next) => {
         const user = new User({
             username,
             passwordHash: senha,
-            is_admin: is_admin
+            isAdmin: isAdmin
         });
 
         await user.save();
@@ -89,7 +89,7 @@ router.post('/login', async (req, res, next) => {
 
         const token = jwt.sign(
             {
-                sub: user._id, username: user.username, is_admin: user.is_admin
+                sub: user._id, username: user.username, isAdmin: user.isAdmin
             },
             jwtSecret,
             { expiresIn: "1h" }
@@ -103,7 +103,7 @@ router.post('/login', async (req, res, next) => {
         });
 
         return res.json({
-            user: { is_admin: user.is_admin }, token: token
+            user: { isAdmin: user.isAdmin }, token: token
         });
 
     }
