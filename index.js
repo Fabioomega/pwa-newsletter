@@ -1,5 +1,6 @@
 const path = require("path");
 const express = require("express");
+const connectDB = require('./src/config/connection');
 
 const app = express();
 
@@ -14,6 +15,7 @@ const authRouter = require('./src/routes/auth.routes');
 app.use("/users", usersRouter);
 app.use("/auth", authRouter);
 
+connectDB();
 
 app.listen(8080, function () {
   console.log("Servidor rodando na porta 8080...");

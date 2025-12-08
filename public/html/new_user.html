@@ -8,20 +8,22 @@
 </head>
 
 <body>
-    <form action="/users" method="post">
-        <label for="username">Name:</label>
-        <input id="username" name="username" required>
-        <br>
-        <br>
-        <label for="phone">Phone:</label>
-        <input id="phone" name="phone" pattern="^[0-9]{9}$" required>
-        <br>
-        <br>
-        <label for="is_admin">Is admin:</label>
-        <input id="is_admin" name="privilege" type="checkbox" value="admin">
-        <br>
-        <button>Send</button>
-    </form>
+    <label for="username">Name:</label>
+    <input id="username" name="username" required>
+    <br>
+    <br>
+    <label for="password">Password:</label>
+    <input id="password" name="password" type="password" required>
+    <br>
+    <br>
+    <label for="isAdmin">Is admin:</label>
+    <input id="isAdmin" name="isAdmin" type="checkbox" value="admin">
+    <br>
+    <button id="sendBtn">Send</button>
+
+    <p id="output"></p>
+
+    <script src="../js/new_user.js"></script>
 </body>
 
 </html>

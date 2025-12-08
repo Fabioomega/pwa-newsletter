@@ -1,8 +1,15 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
+const { mongoUri } = require('./env');
 
-mongoose
-    .connect("mongodb://root:root@localhost:27017/petshop?authSource=admin", {})
-    .then(() => console.log("Conectado ao MongoDB"))
-    .catch((err) => console.error("Erro ao conectar:", err));
+async function connectMongoDB() {
+    try {
+        console.log('Tentando conectar no Mongo em:', mongoUri);
+        await mongoose.connect(mongoUri);
+        console.log('MongoDB conectado!');
+    } catch (err) {
+        console.error('Erro ao conectar o MongoDB:', err.message);
+        process.exit(1);
+    }
+}
 
-module.exports = mongoose;
+module.exports = connectMongoDB;
