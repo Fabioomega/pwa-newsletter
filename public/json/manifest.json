@@ -1,0 +1,16 @@
+{
+  "name": "AppNews UFSC",
+  "short_name": "AppNews",
+  "description": "Project to share news",
+  "start_url": "/page/dashboard",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#000000",
+  "icons": [
+    {
+      "src": "/img/cute.jpg",
+      "sizes": "256x232",
+      "type": "image/jpg"
+    }
+  ]
+}
