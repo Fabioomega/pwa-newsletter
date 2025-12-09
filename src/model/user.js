@@ -21,6 +21,12 @@ const userSchema = new mongoose.Schema(
             type: Boolean,
             enum: [true, false],
             default: false
+        },
+
+        preferences: {
+            type: [String],
+            enum: ["tecnologia", "saude", "negocios", "natureza", "politica"],
+            default: []
         }
     }
 );
