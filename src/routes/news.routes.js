@@ -1,9 +1,11 @@
+const path = require("path");
 const express = require("express");
 const auth = require("../middlewares/auth");
 const onlyAdmin = require("../middlewares/onlyAdmin");
 const News = require('../model/news');
 
 const router = express.Router();
+
 
 router.post('/update', auth, onlyAdmin, async (req, res, next) => {
     try {

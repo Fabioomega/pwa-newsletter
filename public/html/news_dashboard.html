@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>News Dashboard</title>
+
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background: #1b1b1b;
+        color: #eaeaea;
+        margin: 0;
+        padding: 0;
+      }
+
+      header {
+        padding: 20px;
+        text-align: center;
+        background: #111;
+        box-shadow: 0 2px 8px #0006;
+      }
+
+      header h1 {
+        margin: 0;
+        font-size: 32px;
+        letter-spacing: 1px;
+      }
+
+      .container {
+        max-width: 900px;
+        margin: 40px auto;
+        padding: 0 20px;
+      }
+
+      .type-selector {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 30px;
+      }
+
+      select {
+        background: #222;
+        color: #eee;
+        border: 1px solid #555;
+        padding: 10px 15px;
+        font-size: 16px;
+        border-radius: 4px;
+        cursor: pointer;
+        outline: none;
+      }
+
+      .headlines {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .headline {
+        background: #262626;
+        padding: 18px;
+        border-radius: 6px;
+        box-shadow: 0 0 10px #0005;
+        transition: transform 0.15s ease;
+      }
+
+      .headline:hover {
+        transform: translateX(4px);
+        background: #2e2e2e;
+      }
+
+      .headline-title {
+        font-size: 18px;
+        margin-bottom: 8px;
+        font-weight: bold;
+      }
+
+      .headline-meta {
+        font-size: 14px;
+        color: #c0c0c0;
+        display: flex;
+        justify-content: space-between;
+        opacity: 0.85;
+      }
+    </style>
+  </head>
+
+  <body>
+    <header>
+      <h1>News Dashboard</h1>
+    </header>
+
+    <div class="container">
+      <div class="type-selector">
+        <select id="typeSelect">
+          <option value="tecnologia">Tecnologia</option>
+          <option value="saude">Saúde</option>
+          <option value="negocios">Negócios</option>
+          <option value="natureza">Natureza</option>
+          <option value="politica">Política</option>
+        </select>
+      </div>
+
+      <div class="headlines" id="headlineContainer"></div>
+    </div>
+
+    <script src="../js/news_dashboard.js"></script>
+  </body>
+</html>

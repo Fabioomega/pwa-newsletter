@@ -14,10 +14,13 @@ const buildPage = () => {
         let div = document.createElement('div');
         div.innerHTML = `
             <label for="${preference}">${preference}</label>
-            <input class="preference-modal" type="checkbox" id=${preference}/>
+            <input class="preference-modal" type="checkbox" id="${preference}" />
         `;
+        app.appendChild(div);
+    }
 
-        div.childNodes[1].addEventListener('change', (e) => {
+    for (let inp of document.getElementsByClassName('preference-modal')) {
+        inp.addEventListener('change', (e) => {
             if (e.target.checked) {
                 selectedPreferences.add(e.target.id);
                 return;
@@ -25,8 +28,6 @@ const buildPage = () => {
 
             selectedPreferences.delete(e.target.id);
         });
-
-        app.appendChild(div);
     }
 }; buildPage();
 
@@ -37,7 +38,7 @@ const savePreferences = async () => {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            preferences: selectedPreferences
+            preferences: [...selectedPreferences]
         })
     });
 
@@ -48,3 +49,5 @@ const savePreferences = async () => {
 
     console.log('Preferences failed to change!');
 }
+
+saveBtn.addEventListener('click', savePreferences);

@@ -1,15 +1,15 @@
-export const checkRedirect = async (url) => {
+const checkRedirect = async (url) => {
     let f = await fetch(url)
 
     return f.status;
 }
 
-export const redirect = (subpath) => {
+const redirect = (subpath) => {
     window.location.assign(window.location.origin + subpath)
 }
 
-export const redirectIf = (subpath, urlToCheck) => {
-    if (checkRedirect(urlToCheck)) {
+const redirectIf = (subpath, urlToCheck) => {
+    if (checkRedirect(urlToCheck) == 200) {
         redirect(subpath);
         return true;
     }

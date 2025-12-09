@@ -5,17 +5,26 @@ const auth = require("../middlewares/auth");
 
 const router = express.Router();
 
-router.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '..', '..', 'public', 'html', 'new_user.html'));
-});
+router.get('/preferences', auth, async (req, resp) => {
+    let usersPreferences = {};
+    try {
+        usersPreferences = await User.findById(req.user.sub, 'preferences');
+    } catch (err) {
+        return resp.status(500).json({
+            error: err.message,
+        });
+    }
 
-router.get('/preferences', (req, resp) => {
-    resp.sendFile(path.join(__dirname, '..', '..', 'public', 'html', 'preferences.html'));
+    return resp.json({
+        preferences: usersPreferences.preferences
+    });
 });
 
 router.post('/preferences', auth, async (req, res, next) => {
     try {
         const { preferences } = req.body;
+
+        console.log(req.body);
 
         const fields = ['preferences'];
 
@@ -27,7 +36,7 @@ router.post('/preferences', auth, async (req, res, next) => {
             }
 
         }
-        if (requiredFields.length > 0) {
+        if (requiredFields.length > 0 ) {
             res.status(400).json({ error: 'Existem campos obrigatórios não preenchidos.', camposObrigatorios: requiredFields });
             return;
         }
