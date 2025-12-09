@@ -118,6 +118,10 @@ router.get('/logout', async (req, res) => {
     return res.json({ "mensagem": "Logout realizado." });
 });
 
+router.get('/is-logged', auth, (req, res) => {
+    return res.send('You are an user! Yay!')
+});
+
 router.get('/is-admin', auth, onlyAdmin, (req, res) => {
     return res.send('You are an admin! Yay!')
 });

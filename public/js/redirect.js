@@ -8,8 +8,10 @@ const redirect = (subpath) => {
     window.location.assign(window.location.origin + subpath)
 }
 
-const redirectIf = (subpath, urlToCheck) => {
-    if (checkRedirect(urlToCheck) == 200) {
+const redirectIf = async (subpath, urlToCheck) => {
+    let status = await checkRedirect(urlToCheck);
+    
+    if (status == 200) {
         redirect(subpath);
         return true;
     }

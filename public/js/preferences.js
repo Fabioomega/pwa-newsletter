@@ -6,6 +6,8 @@
 const preferences = ["tecnologia", "saude", "negocios", "natureza", "politica"]
 const app = document.getElementById("app");
 const saveBtn = document.getElementById('save');
+const returnBtn = document.getElementById('return');
+
 
 let selectedPreferences = new Set();
 
@@ -43,11 +45,11 @@ const savePreferences = async () => {
     });
 
     if (f.status == 201) {
-        console.log("Success!");
+        redirect('/page/dashboard')
         return;
     }
-
-    console.log('Preferences failed to change!');
 }
 
+
 saveBtn.addEventListener('click', savePreferences);
+returnBtn.addEventListener('click', () => redirect('/page/dashboard'));
