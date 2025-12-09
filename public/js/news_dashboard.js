@@ -28,6 +28,7 @@ const headlines = {
 
 const select = document.getElementById("typeSelect");
 const container = document.getElementById("headlineContainer");
+const changePreferences = document.getElementById('changePreferences');
 
 const getPreferences = async () => {
     let f = await fetch("/users/preferences");
@@ -66,8 +67,9 @@ const loadTypeSelect = async () => {
 
         select.appendChild(opt);
     }
+
+    if (preferences.length != 0) loadHeadlines(preferences[0]);
 }; loadTypeSelect();
 
 select.addEventListener("change", () => loadHeadlines(select.value));
-
-loadHeadlines("tecnologia");
+changePreferences.addEventListener('click', () => redirect('/page/preferences'));

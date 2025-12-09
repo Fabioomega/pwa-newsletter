@@ -20,3 +20,5 @@ const buttonHandler = async () => {
 };
 
 sendBtn.addEventListener('click', buttonHandler);
+
+redirectIf('/page/dashboard', 'auth/is-logged');
