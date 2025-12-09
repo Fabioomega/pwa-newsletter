@@ -9,6 +9,10 @@ router.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '..', '..', 'public', 'html', 'new_user.html'));
 });
 
+router.get('/preferences', (req, resp) => {
+    resp.sendFile(path.join(__dirname, '..', '..', 'public', 'html', 'preferences.html'));
+});
+
 router.post('/preferences', auth, async (req, res, next) => {
     try {
         const { preferences } = req.body;
@@ -30,7 +34,7 @@ router.post('/preferences', auth, async (req, res, next) => {
 
         await User.findByIdAndUpdate(req.user.sub, { $set: { preferences: preferences } }, { runValidators: true });
 
-        return res.json({
+        return res.status(201).json({
             "mensagem": "Preferencias modificadas com successo!"
         });
     }
