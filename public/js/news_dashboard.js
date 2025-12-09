@@ -29,7 +29,15 @@ const headlines = {
 const select = document.getElementById("typeSelect");
 const container = document.getElementById("headlineContainer");
 
-function loadHeadlines(type) {
+const getPreferences = async () => {
+    let f = await fetch("/users/preferences");
+
+    let json = await f.json();
+
+    return json.preferences;
+}
+
+const loadHeadlines = (type) => {
     container.innerHTML = "";
     headlines[type].forEach(news => {
         const div = document.createElement("div");
@@ -46,6 +54,19 @@ function loadHeadlines(type) {
         container.appendChild(div);
     });
 }
+
+const loadTypeSelect = async () => {
+    let preferences = await getPreferences();
+    for (let preference of preferences) {
+        let opt = document.createElement('option');
+        opt.setAttribute('value', preference);
+        
+        let textNode = document.createTextNode(preference);
+        opt.appendChild(textNode);
+
+        select.appendChild(opt);
+    }
+}; loadTypeSelect();
 
 select.addEventListener("change", () => loadHeadlines(select.value));
 
