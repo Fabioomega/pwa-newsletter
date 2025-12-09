@@ -1,9 +1,10 @@
 const path = require("path");
 const express = require("express");
 const cors = require('cors');
+const errorHandler = require('./src/middlewares/errorHandler');
 const connectDB = require('./src/config/connection');
-
 const cookieParser = require('cookie-parser');
+
 const app = express();
 
 // midlewares globais
@@ -27,6 +28,8 @@ app.use('/page', pagesRouter);
 app.use('/news', newsRouter);
 app.use("/users", usersRouter);
 app.use("/auth", authRouter);
+
+app.use(errorHandler);
 
 connectDB();
 
