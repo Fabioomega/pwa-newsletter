@@ -73,3 +73,15 @@ const loadTypeSelect = async () => {
 
 select.addEventListener("change", () => loadHeadlines(select.value));
 changePreferences.addEventListener('click', () => redirect('/page/preferences'));
+
+
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker
+    .register("../js/service_worker.js")
+    .then(function (registration) {})
+    .catch(function (err) {
+      console.log("Registro do service worker:", err);
+    });
+} else {
+  console.log("ServiceWorker não é suportado.");
+}
