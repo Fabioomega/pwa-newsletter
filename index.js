@@ -19,8 +19,10 @@ app.use(express.static(__dirname + "/public"));
 const usersRouter = require('./src/routes/users.routes');
 const authRouter = require('./src/routes/auth.routes');
 const newsRouter = require('./src/routes/news.routes');
+const rootRouter = require('./src/routes/root.routes');
 const pagesRouter = require('./src/routes/pages.routes');
 
+app.use('/', rootRouter);
 app.use('/page', pagesRouter);
 app.use('/news', newsRouter);
 app.use("/users", usersRouter);
