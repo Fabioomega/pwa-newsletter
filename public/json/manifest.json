@@ -14,7 +14,15 @@
       "platform": "wide",
       "label": "Homescreen of Awesome App"
     }],
+  "permissions": [
+    "notifications"
+  ],
   "icons": [
+    {
+      "src": "/img/icon-92.png",
+      "sizes": "92x92",
+      "type": "image/png"
+    },
     {
       "src": "/img/icon-192.png",
       "sizes": "192x192",

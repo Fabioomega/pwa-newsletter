@@ -16,7 +16,7 @@ router.post('/register', async (req, res, next) => {
         const camposObrigatorios = [];
 
         for (let campo of campos) {
-            if (!req.body[campo]) {
+            if (req.body[campo] === undefined) {
                 camposObrigatorios.push(campo);
             }
 

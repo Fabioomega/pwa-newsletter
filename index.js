@@ -22,12 +22,14 @@ const authRouter = require('./src/routes/auth.routes');
 const newsRouter = require('./src/routes/news.routes');
 const rootRouter = require('./src/routes/root.routes');
 const pagesRouter = require('./src/routes/pages.routes');
+const notificationsRouter = require('./src/routes/notifications.routes');
 
 app.use('/', rootRouter);
 app.use('/page', pagesRouter);
 app.use('/news', newsRouter);
 app.use("/users", usersRouter);
 app.use("/auth", authRouter);
+app.use("/notifications", notificationsRouter);
 
 app.use(errorHandler);
 

@@ -17,8 +17,8 @@ const buttonHandler = async () => {
 
     let json = await f.json();
     outputModal.textContent = JSON.stringify(json);
+
+    if (f.status == 200) redirect('/page/dashboard');
 };
 
 sendBtn.addEventListener('click', buttonHandler);
-
-redirectIf('/page/dashboard', 'auth/is-logged');

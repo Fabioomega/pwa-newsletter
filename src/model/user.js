@@ -27,6 +27,10 @@ const userSchema = new mongoose.Schema(
             type: [String],
             enum: ["tecnologia", "saude", "negocios", "natureza", "politica"],
             default: []
+        },
+        subscription: {
+            type: Object,
+            required: false
         }
     }
 );

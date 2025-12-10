@@ -5,16 +5,18 @@ const outputModal = document.getElementById('output');
 const sendBtn = document.getElementById('sendBtn');
 
 const buttonHandler = async () => {
+    let body = JSON.stringify({
+            username: usernameModal.value,
+            senha: passwordModal.value,
+            isAdmin: isAdminModal?.checked === true,
+        });
+
     let f = await fetch("/auth/register", {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({
-            username: usernameModal.value,
-            senha: passwordModal.value,
-            isAdmin: isAdminModal.checked === true,
-        })
+        body: body
     });
 
     let json = await f.json();

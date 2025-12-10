@@ -1,34 +1,67 @@
-const headlines = {
-        tecnologia: [
-            { title: "Nova IA promete revolucionar o setor de produtividade", user: "Ana Lima", time: "2025-01-10 14:22" },
-            { title: "Fabricantes anunciam baterias com autonomia recorde", user: "Carlos Pinto", time: "2025-01-09 09:10" },
-            { title: "Cidades inteligentes começam a se tornar padrão", user: "João Alves", time: "2025-01-08 17:45" }
-        ],
-        saude: [
-            { title: "Estudo aponta melhora no bem-estar com exercícios leves", user: "Rita Sousa", time: "2025-01-07 11:32" },
-            { title: "Nova vacina mostra resultados promissores", user: "Marcos Teixeira", time: "2025-01-06 08:54" },
-            { title: "Hospitais adotam sistemas digitais avançados", user: "Camila Torres", time: "2025-01-05 19:18" }
-        ],
-        negocios: [
-            { title: "Mercado global apresenta sinais de recuperação", user: "Daniel Oliveira", time: "2025-01-03 13:40" },
-            { title: "Empresas apostam em energias renováveis", user: "Beatriz Rocha", time: "2025-01-02 15:05" },
-            { title: "Startups brasileiras atraem investimentos recorde", user: "Leonardo Castro", time: "2025-01-01 10:12" }
-        ],
-        natureza: [
-            { title: "Regiões tropicais registram aumento de biodiversidade", user: "Paula Mendes", time: "2025-01-04 12:22" },
-            { title: "Projeto global para reflorestamento ganha força", user: "Fernando Reis", time: "2025-01-03 16:48" },
-            { title: "Pesquisadores descobrem espécie rara na Amazônia", user: "Sofia Braga", time: "2025-01-01 09:55" }
-        ],
-        politica: [
-            { title: "Novo acordo internacional é firmado", user: "Luiz Campos", time: "2025-01-07 07:30" },
-            { title: "Reformas administrativas entram em debate", user: "Marina Duarte", time: "2025-01-06 20:25" },
-            { title: "Eleições movimentam o cenário nacional", user: "Eduardo Nunes", time: "2025-01-05 13:10" }
-        ]
-};
-
 const select = document.getElementById("typeSelect");
 const container = document.getElementById("headlineContainer");
 const changePreferences = document.getElementById('changePreferences');
+
+let headlines;
+
+const urlBase64ToUint8Array = (base64String) => {
+    const padding = '='.repeat((4 - base64String.length % 4) % 4);
+    const base64 = (base64String + padding)
+        .replace(/\-/g, '+')
+        .replace(/_/g, '/');
+
+    const rawData = window.atob(base64);
+    const outputArray = new Uint8Array(rawData.length);
+
+    for (let i = 0; i < rawData.length; ++i) {
+        outputArray[i] = rawData.charCodeAt(i);
+    }
+    return outputArray;
+}
+
+const subscribeUser = async (registration) => {
+    const permission = await Notification.requestPermission();
+    if (permission !== 'granted') {
+        console.warn('Notification permission denied.');
+        return;
+    }
+
+    try {
+        const response = await fetch('/notifications/public-key');
+        const data = await response.json();
+        const applicationServerKey = urlBase64ToUint8Array(data.publicKey);
+
+        const options = {
+            userVisibleOnly: true,
+            applicationServerKey: applicationServerKey
+        };
+        const subscription = await registration.pushManager.subscribe(options);
+
+        await fetch('/notifications/subscribe', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(subscription)
+        });
+
+        console.log('Subscription sent to server.');
+    } catch (error) {
+        console.error('Failed to subscribe the user:', error);
+    }
+}
+
+const formatDate = (date) => {
+    const d = new Date(date);
+
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0'); // months are 0-based
+    const day = String(d.getDate()).padStart(2, '0');
+    const hours = String(d.getHours()).padStart(2, '0');
+    const minutes = String(d.getMinutes()).padStart(2, '0');
+
+    return `${year}-${month}-${day} ${hours}:${minutes}`;
+}
 
 const getPreferences = async () => {
     let f = await fetch("/users/preferences");
@@ -38,17 +71,29 @@ const getPreferences = async () => {
     return json.preferences;
 }
 
+const getNews = async(preferences) => {
+    const response = await fetch(`/news/?types=${preferences.join(';')}`);
+    const news = await response.json();
+    return news;
+}
+
+const loadNews = async(preferences) => {
+    headlines = await getNews(preferences);
+}
+
 const loadHeadlines = (type) => {
     container.innerHTML = "";
-    headlines[type].forEach(news => {
+    headlines.forEach(news => {
+        if (news.contentType != type) return;
+
         const div = document.createElement("div");
         div.className = "headline";
         
         div.innerHTML = `
-            <div class="headline-title">${news.title}</div>
+            <div class="headline-title">${news.content}</div>
             <div class="headline-meta">
-                <span>👤 ${news.user}</span>
-                <span>🕒 ${news.time}</span>
+                <span>👤 ${news.username}</span>
+                <span>🕒 ${formatDate(new Date(news.createdAt))}</span>
             </div>
         `;
         
@@ -56,8 +101,7 @@ const loadHeadlines = (type) => {
     });
 }
 
-const loadTypeSelect = async () => {
-    let preferences = await getPreferences();
+const loadTypeSelect = async (preferences) => {
     for (let preference of preferences) {
         let opt = document.createElement('option');
         opt.setAttribute('value', preference);
@@ -67,18 +111,26 @@ const loadTypeSelect = async () => {
 
         select.appendChild(opt);
     }
+};
+
+
+const loadPage = async () => {
+    let preferences = await getPreferences();
+
+    await Promise.all([loadTypeSelect(preferences), loadNews(preferences)]);
 
     if (preferences.length != 0) loadHeadlines(preferences[0]);
-}; loadTypeSelect();
+}; loadPage();
 
 select.addEventListener("change", () => loadHeadlines(select.value));
 changePreferences.addEventListener('click', () => redirect('/page/preferences'));
 
-
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker
     .register("../js/service_worker.js")
-    .then(function (registration) {})
+    .then(function (registration) {
+        subscribeUser(registration);
+    })
     .catch(function (err) {
       console.log("Registro do service worker:", err);
     });

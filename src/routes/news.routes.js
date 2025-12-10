@@ -3,9 +3,10 @@ const express = require("express");
 const auth = require("../middlewares/auth");
 const onlyAdmin = require("../middlewares/onlyAdmin");
 const News = require('../model/news');
+const User = require('../model/user');
+const webpush = require('../config/webpush');
 
 const router = express.Router();
-
 
 router.post('/update', auth, onlyAdmin, async (req, res, next) => {
     try {
@@ -30,7 +31,7 @@ router.post('/update', auth, onlyAdmin, async (req, res, next) => {
 
         return res.status(201).json({
             mensagem: "Noticia editada com sucesso!",
-            msgId: news._id
+            msgId: id
         });
     }
     catch (err) {
@@ -65,6 +66,24 @@ router.post('/publish', auth, onlyAdmin, async (req, res, next) => {
 
         try {
             await news.save();
+
+            const users = await User.find({ subscription: { $exists: true }, preferences: type });
+
+
+            const payload = JSON.stringify({
+                title: 'Fresh News!',
+                body: content,
+            
+            });
+
+            for (const user of users) {
+                try {
+                    await webpush.sendNotification(user.subscription, payload);
+                } catch (error) {
+                    console.error(`Error sending notification to user ${user._id}:`, error);
+                }
+            }
+            
         } catch (err) {
             if (err.name === 'ValidationError') {
                 const validationErrors = {};
@@ -90,6 +109,33 @@ router.post('/publish', auth, onlyAdmin, async (req, res, next) => {
     }
     catch (err) {
         next(err)
+    }
+});
+
+router.get('/', auth, async (req, res, next) => {
+    try {
+        const { types } = req.query;
+        let query = {};
+
+        if (types) {
+            const typesArray = types.split(';');
+            query.contentType = { $in: typesArray };
+        }
+
+        const news = await News.find(query)
+            .populate('createdBy', 'username')
+            .sort({ createdAt: -1 });
+
+        const formattedNews = news.map(item => ({
+            content: item.content,
+            contentType: item.contentType,
+            createdAt: item.createdAt,
+            username: item.createdBy?.username || 'Desconhecido'
+        }));
+
+        res.status(200).json(formattedNews);
+    } catch (err) {
+        next(err);
     }
 });
 
